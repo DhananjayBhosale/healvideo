@@ -1,0 +1,11 @@
+name: Camera profile request
+description: Ask for support for another camera
+labels: [camera-profile]
+body:
+  - type: input
+    id: camera
+    attributes: { label: Camera model and recording mode, placeholder: "GoPro Hero 11, 5.3K 30fps HEVC" }
+    validations: { required: true }
+  - type: textarea
+    id: notes
+    attributes: { label: Anything else, description: "File extension, what the broken files look like. Do not attach private videos." }

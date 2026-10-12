@@ -1,0 +1,18 @@
+name: Bug report
+description: A video did not repair, or the app misbehaved
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Please do not attach private videos. We will ask for a sample only if we need one."
+  - type: input
+    id: system
+    attributes: { label: Your system, placeholder: "macOS 15 Apple silicon / Windows 11 / Ubuntu 24.04" }
+    validations: { required: true }
+  - type: input
+    id: camera
+    attributes: { label: Camera or device that made the video, placeholder: "DJI Osmo Action 3" }
+  - type: textarea
+    id: what
+    attributes: { label: What happened, description: "What you did, what the app said, what you expected" }
+    validations: { required: true }

@@ -1,0 +1,26 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.venv/
+.DS_Store
+# recovered or broken media, card images, and local tool builds never belong in the repo
+*.mp4
+*.mov
+*.m4v
+*.img
+*.dd
+*.h265
+repaired/
+rebuilt/
+bin/
+node_modules/
+app/out/
+app/staging/
+app/dist/
+build/
+
+# old prototype, superseded by app/
+gui/

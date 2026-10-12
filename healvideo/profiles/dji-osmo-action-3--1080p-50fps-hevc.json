@@ -1,0 +1,20 @@
+{
+  "name": "DJI Osmo Action 3, 1080p 50fps HEVC",
+  "match": [
+    "DJI OsmoAction3"
+  ],
+  "fps": 50.0,
+  "width": 1920,
+  "height": 1080,
+  "paramsets_hex": "0000000140010c01ffff21600000030000030000030000030096ac0c000003019000004e21400000000142010121600000030000030000030000030096a003c08010e7f96bbb726bb1350101010080000000014401c073c089",
+  "codec": "hevc",
+  "nal_types": [
+    2,
+    38,
+    40
+  ],
+  "note": "Made from a clip recorded on a DJI Osmo Action 3. Decoder settings only, no picture data. The camera also writes an H.264 proxy file for each recording; this profile does not match those.",
+  "exclude": [
+    "avc1"
+  ]
+}

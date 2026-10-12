@@ -1,0 +1,88 @@
+# Builds an installer on each system. Push a tag like v0.1.0 to publish a GitHub release with
+# the files attached. Run it by hand (Actions tab) to just build the files without publishing.
+# macOS builds are signed and notarized only when the Apple secrets below exist; otherwise unsigned.
+name: Build installers
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  installer:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: macOS (Apple silicon), os: macos-latest }
+          - { name: macOS (Intel), os: macos-15-intel }
+          - { name: Windows, os: windows-latest }
+          - { name: Linux, os: ubuntu-22.04 }
+    env:
+      MAC_CERT: ${{ secrets.MAC_CERTIFICATE_P12_BASE64 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: python -m pip install -e ".[dev,build]"
+      - run: python -m pytest -q
+      - name: Install app dependencies (downloads Electron and FFmpeg for this system)
+        working-directory: app
+        run: npm ci
+      - name: Freeze the engine and stage FFmpeg
+        run: python packaging/build.py
+      - name: Build the installer (unsigned)
+        if: runner.os != 'macOS' || env.MAC_CERT == ''
+        working-directory: app
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: npm run dist
+      - name: Build, sign and notarize the installer (macOS)
+        if: runner.os == 'macOS' && env.MAC_CERT != ''
+        working-directory: app
+        env:
+          CSC_LINK: ${{ secrets.MAC_CERTIFICATE_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
+          APPLE_API_KEY: ${{ runner.temp }}/AuthKey.p8
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER_ID }}
+        run: |
+          printf '%s' "${{ secrets.APPLE_API_KEY_P8_BASE64 }}" | base64 --decode > "$APPLE_API_KEY"
+          npx electron-builder --publish never -c.mac.notarize=true
+          rm -f "$APPLE_API_KEY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: healvideo-${{ runner.os }}-${{ runner.arch }}
+          path: |
+            app/dist/*.dmg
+            app/dist/*.exe
+            app/dist/*.AppImage
+            app/dist/*.deb
+          if-no-files-found: error
+
+  publish:
+    name: Publish GitHub release
+    needs: installer
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: files
+          merge-multiple: true
+      - name: Create the release with the installers attached
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -l files
+          gh release create "$GITHUB_REF_NAME" files/* --repo "$GITHUB_REPOSITORY" \
+            --title "HealVideo ${GITHUB_REF_NAME#v}" --prerelease --generate-notes \
+            --notes "Early preview. See the README for what works and what is untested."

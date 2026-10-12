@@ -1,0 +1,93 @@
+{
+  "name": "healvideo",
+  "productName": "HealVideo",
+  "version": "0.1.0",
+  "description": "Repair corrupted video files. Free and open source.",
+  "license": "GPL-3.0-or-later",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "stage": "python ../packaging/build.py",
+    "dist": "electron-builder --publish never",
+    "pack": "electron-builder --dir --publish never"
+  },
+  "devDependencies": {
+    "@phosphor-icons/core": "^2.1.1",
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3",
+    "ffmpeg-static": "^5.3.0",
+    "ffprobe-static": "^3.1.0",
+    "geist": "^1.7.2"
+  },
+  "author": "HealVideo contributors",
+  "build": {
+    "appId": "io.github.dhananjaybhosale.healvideo",
+    "productName": "HealVideo",
+    "copyright": "Copyright (C) 2026 HealVideo contributors. GPL-3.0-or-later.",
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "staging/engine/healvideo-engine",
+        "to": "engine"
+      },
+      {
+        "from": "staging/bin",
+        "to": "bin"
+      },
+      {
+        "from": "staging/licenses",
+        "to": "licenses"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.video",
+      "target": [
+        "dmg"
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "assets/entitlements.mac.plist",
+      "entitlementsInherit": "assets/entitlements.mac.plist",
+      "artifactName": "HealVideo-mac-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "HealVideo"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "HealVideo-windows-setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "AudioVideo",
+      "maintainer": "HealVideo contributors <54058415+DhananjayBhosale@users.noreply.github.com>",
+      "synopsis": "Repair corrupted video files",
+      "artifactName": "HealVideo-linux.${ext}"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DhananjayBhosale/healvideo.git"
+  },
+  "homepage": "https://github.com/DhananjayBhosale/healvideo"
+}

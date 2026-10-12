@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' file: data:;">
+<title>HealVideo</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="wordmark">HealVideo</div>
+    <nav aria-label="Steps"><ol class="steps" id="steps"></ol></nav>
+    <div class="promise">Your original files are never changed. Everything stays on this computer.</div>
+    <div class="preview-flag" id="flag" hidden>Preview with sample data</div>
+  </aside>
+  <main class="main"><div class="view" id="view" aria-live="polite"></div></main>
+</div>
+<script src="icons.js"></script>
+<script src="mock.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
