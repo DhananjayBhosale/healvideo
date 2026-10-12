@@ -73,8 +73,8 @@ def copy_licenses():
     out.mkdir(parents=True)
     for name in ("LICENSE", "CREDITS.md"):
         shutil.copy2(ROOT / name, out / name)
-    shutil.copy2(APP / "node_modules" / "ffmpeg-static" / "ffmpeg.LICENSE", out / "FFmpeg-LICENSE.txt")
-    shutil.copy2(APP / "node_modules" / "ffmpeg-static" / "ffmpeg.README", out / "FFmpeg-README.txt")
+    shutil.copy2(APP / "node_modules" / "ffmpeg-static" / f"ffmpeg{EXE}.LICENSE", out / "FFmpeg-LICENSE.txt")
+    shutil.copy2(APP / "node_modules" / "ffmpeg-static" / f"ffmpeg{EXE}.README", out / "FFmpeg-README.txt")
 
 
 def smoke_test(engine, bin_dir):
